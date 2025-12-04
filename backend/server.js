@@ -3,6 +3,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const connectDB = require("./config/db");
 const authRoutes = require("./routes/authRoutes");
+const householdRoutes = require("./routes/householdRoutes");
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get("/api/health", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/household", householdRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);

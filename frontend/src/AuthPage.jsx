@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { registerUser, loginUser } from "./api/auth";
 
-function AuthPage() {
+function AuthPage( { onAuthSuccess } ) {
   const [mode, setMode] = useState("login"); // "login" or "register"
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -23,11 +23,18 @@ function AuthPage() {
       if (isLogin) {
         const result = await loginUser({ email, password });
         setMessage("Logged in successfully!");
-        console.log("Login result:", result);
+
+        if (onAuthSuccess) {
+          onAuthSuccess({
+            user: result.user,
+            token: result.token,
+          });
+        }
       } else {
         const result = await registerUser({ name, email, password });
         setMessage("Registered successfully! You can now log in.");
         console.log("Register result:", result);
+        // Switch back to login mode after registration
         setMode("login");
       }
     } catch (err) {
