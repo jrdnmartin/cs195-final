@@ -21,73 +21,72 @@ function HouseholdSection({ auth }) {
 
   const [newChoreTitle, setNewChoreTitle] = useState("");
 
-
   const handleAddChore = async (e) => {
     e.preventDefault();
     if (!newChoreTitle.trim()) return;
 
     setActionMessage("");
     try {
-        const result = await addChore(auth.token, {
+      const result = await addChore(auth.token, {
         title: newChoreTitle.trim(),
-        });
-        setHousehold(result.household);
-        setNewChoreTitle("");
-        setActionMessage("Chore added.");
+      });
+      setHousehold(result.household);
+      setNewChoreTitle("");
+      setActionMessage("Chore added.");
     } catch (err) {
-        setActionMessage(err.message);
+      setActionMessage(err.message);
     }
-    };
+  };
 
-    const handleToggleChore = async (chore) => {
+  const handleToggleChore = async (chore) => {
     setActionMessage("");
     const nextStatus = chore.status === "done" ? "pending" : "done";
 
     try {
-        const result = await updateChore(auth.token, chore._id, {
+      const result = await updateChore(auth.token, chore._id, {
         status: nextStatus,
-        });
-        setHousehold(result.household);
+      });
+      setHousehold(result.household);
     } catch (err) {
-        setActionMessage(err.message);
+      setActionMessage(err.message);
     }
-    };
+  };
 
-    const handleAssignChore = async (choreId, assignedToId) => {
+  const handleAssignChore = async (choreId, assignedToId) => {
     setActionMessage("");
     try {
-        const payload = {
-        assignedToId: assignedToId || null, // allow clearing assignment
-        };
-        const result = await updateChore(auth.token, choreId, payload);
-        setHousehold(result.household);
-        setActionMessage("Chore assignment updated.");
+      const payload = {
+        assignedToId: assignedToId || null,
+      };
+      const result = await updateChore(auth.token, choreId, payload);
+      setHousehold(result.household);
+      setActionMessage("Chore assignment updated.");
     } catch (err) {
-        setActionMessage(err.message);
+      setActionMessage(err.message);
     }
-    };
+  };
 
-    const handleRotateChores = async () => {
+  const handleRotateChores = async () => {
     setActionMessage("");
     try {
-        const result = await rotateChoresApi(auth.token);
-        setHousehold(result.household);
-        setActionMessage(result.message);
+      const result = await rotateChoresApi(auth.token);
+      setHousehold(result.household);
+      setActionMessage(result.message);
     } catch (err) {
-        setActionMessage(err.message);
+      setActionMessage(err.message);
     }
-    };
+  };
 
-    const handleDeleteChore = async (choreId) => {
+  const handleDeleteChore = async (choreId) => {
     setActionMessage("");
     try {
-        const result = await deleteChoreApi(auth.token, choreId);
-        setHousehold(result.household);
-        setActionMessage("Chore deleted.");
+      const result = await deleteChoreApi(auth.token, choreId);
+      setHousehold(result.household);
+      setActionMessage("Chore deleted.");
     } catch (err) {
-        setActionMessage(err.message);
+      setActionMessage(err.message);
     }
-    };
+  };
 
   // helper to fetch latest household from backend
   const fetchHousehold = async () => {
@@ -138,76 +137,43 @@ function HouseholdSection({ auth }) {
     try {
       await leaveHousehold(auth.token);
       setActionMessage("You left the household.");
-      setHousehold(null); // back to setup view
+      setHousehold(null);
     } catch (err) {
       setActionMessage(err.message);
     }
   };
 
-
   if (loading) {
-    return <p>Loading household info...</p>;
+    return (
+      <div className="loading-state">
+        Loading household info...
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div
-        style={{
-          padding: "1rem",
-          borderRadius: "8px",
-          background: "#fee2e2",
-          color: "#b91c1c",
-          maxWidth: "500px",
-        }}
-      >
+      <div className="error-state">
         <strong>Error:</strong> {error}
       </div>
     );
   }
 
-  // No household yet → show create/join UI
   if (!household) {
     return (
-      <div
-        style={{
-          padding: "1.5rem",
-          borderRadius: "8px",
-          background: "#ffffff",
-          boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-          maxWidth: "600px",
-        }}
-      >
+      <div className="setup-container">
         <h2>Household Setup</h2>
         <p>You’re not in a household yet. Create one or join one below.</p>
 
         <h3>Create Household</h3>
-        <form onSubmit={handleCreate} style={{ marginBottom: "1rem" }}>
+        <form onSubmit={handleCreate}>
           <input
             type="text"
             value={createName}
             placeholder="Household name"
             onChange={(e) => setCreateName(e.target.value)}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              marginBottom: "0.5rem",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
           />
-          <button
-            type="submit"
-            style={{
-              padding: "0.5rem 1rem",
-              background: "#2563eb",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Create
-          </button>
+          <button type="submit">Create</button>
         </form>
 
         <h3>Join Household</h3>
@@ -217,36 +183,17 @@ function HouseholdSection({ auth }) {
             value={joinCode}
             placeholder="Enter join code"
             onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
-            style={{
-              width: "100%",
-              padding: "0.5rem",
-              marginBottom: "0.5rem",
-              borderRadius: "4px",
-              border: "1px solid #ddd",
-            }}
           />
-          <button
-            type="submit"
-            style={{
-              padding: "0.5rem 1rem",
-              background: "#16a34a",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-            }}
-          >
-            Join
-          </button>
+          <button type="submit">Join</button>
         </form>
 
         {actionMessage && (
           <p
-            style={{
-              marginTop: "1rem",
-              fontSize: "0.9rem",
-              color: actionMessage.includes("🎉") ? "green" : "red",
-            }}
+            className={
+              actionMessage.includes("🎉")
+                ? "success-message"
+                : "error-message"
+            }
           >
             {actionMessage}
           </p>
@@ -255,258 +202,151 @@ function HouseholdSection({ auth }) {
     );
   }
 
-    return (
-    <div
-        style={{
-        padding: "1.5rem",
-        borderRadius: "8px",
-        background: "#ffffff",
-        boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
-        maxWidth: "700px",
-        }}
-    >
-        <div
-        style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "1rem",
-        }}
-        >
-        <h2 style={{ margin: 0 }}>Your Household</h2>
+  return (
+    <div className="card">
+      <div className="card-header-row">
+        <div>
+          <div className="card-title">Your household</div>
+          <div className="card-subtitle">
+            Share chores, keep expectations clear, avoid awkward fridge notes.
+          </div>
+        </div>
         <button
-            type="button"
-            onClick={handleLeave}
-            style={{
-            padding: "0.4rem 0.8rem",
-            borderRadius: "4px",
-            border: "1px solid #f87171",
-            background: "#fee2e2",
-            color: "#b91c1c",
-            cursor: "pointer",
-            fontSize: "0.85rem",
-            fontWeight: "500",
-            }}
+          type="button"
+          onClick={handleLeave}
+          className="btn btn-danger-outline"
         >
-            Leave Household
+          Leave household
         </button>
-        </div>
+      </div>
 
-        <p style={{ marginBottom: "0.5rem" }}>
+      <p>
         <strong>Name:</strong> {household.name}
-        </p>
-        <p style={{ marginBottom: "1rem" }}>
-        <strong>Join Code:</strong>{" "}
-        <code
-            style={{
-            background: "#f3f4f6",
-            padding: "0.2rem 0.4rem",
-            borderRadius: "4px",
-            }}
-        >
-            {household.joinCode}
-        </code>
-        </p>
+      </p>
+      <p>
+        <strong>Join code:</strong>{" "}
+        <code>{household.joinCode}</code>
+      </p>
 
-        <div style={{ marginTop: "1rem" }}>
+      <div>
         <h3>Members</h3>
-        <ul style={{ paddingLeft: "1.2rem" }}>
-            {household.members?.map((member) => (
+        <ul>
+          {household.members?.map((member) => (
             <li key={member._id}>
-                {member.name}{" "}
-                <span style={{ fontSize: "0.85rem", color: "#6b7280" }}>
+              {member.name}{" "}
+              <span>
                 ({member.email})
-                </span>
+              </span>
             </li>
-            ))}
+          ))}
         </ul>
-        </div>
+      </div>
 
-        <div style={{ marginTop: "1rem" }}>
-        {/* Header + rotate button */}
-        <div
-            style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "0.5rem",
-            }}
-        >
-            <h3 style={{ margin: 0 }}>Chores</h3>
-            <button
+      <div>
+        <div>
+          <h3>Chores</h3>
+          <button
             type="button"
             onClick={handleRotateChores}
-            style={{
-                padding: "0.3rem 0.7rem",
-                borderRadius: "4px",
-                border: "1px solid #d1d5db",
-                background: "#f9fafb",
-                cursor: "pointer",
-                fontSize: "0.8rem",
-            }}
-            >
-            Auto-Rotate Assignments
-            </button>
+            className="btn btn-ghost"
+          >
+            Auto-rotate assignments
+          </button>
         </div>
 
-        {/* Add chore form */}
-        <form
-            onSubmit={handleAddChore}
-            style={{ marginBottom: "0.75rem", display: "flex", gap: "0.5rem" }}
-        >
-            <input
+        <form onSubmit={handleAddChore}>
+          <input
             type="text"
             value={newChoreTitle}
             placeholder="Add a new chore (e.g., Take out trash)"
             onChange={(e) => setNewChoreTitle(e.target.value)}
-            style={{
-                flex: 1,
-                padding: "0.5rem",
-                borderRadius: "4px",
-                border: "1px solid #ddd",
-            }}
-            />
-            <button
-            type="submit"
-            style={{
-                padding: "0.5rem 0.9rem",
-                borderRadius: "4px",
-                border: "none",
-                background: "#2563eb",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "0.9rem",
-            }}
-            >
+            className="input"
+          />
+          <button type="submit" className="btn btn-primary">
             Add
-            </button>
+          </button>
         </form>
 
-        {/* Chore list */}
         {household.chores && household.chores.length > 0 ? (
-            <ul style={{ paddingLeft: "1.2rem" }}>
+          <ul>
             {household.chores.map((chore) => (
-                <li
-                key={chore._id}
-                style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    gap: "0.75rem",
-                    marginBottom: "0.35rem",
-                }}
-                >
+              <li key={chore._id}>
                 <div>
-                    <span
+                  <span
                     style={{
-                        textDecoration:
+                      textDecoration:
                         chore.status === "done" ? "line-through" : "none",
                     }}
-                    >
+                  >
                     {chore.title}
-                    </span>{" "}
-                    <span
-                    style={{
-                        fontSize: "0.8rem",
-                        color: "#6b7280",
-                        textTransform: "capitalize",
-                    }}
-                    >
+                  </span>{" "}
+                  <span>
                     ({chore.status})
+                  </span>
+                  {chore.assignedTo && (
+                    <span>
+                      {" "}
+                      – assigned to {chore.assignedTo.name}
                     </span>
-                    {chore.assignedTo && (
-                    <span
-                        style={{
-                        fontSize: "0.8rem",
-                        color: "#4b5563",
-                        marginLeft: "0.25rem",
-                        }}
-                    >
-                        – assigned to {chore.assignedTo.name}
-                    </span>
-                    )}
+                  )}
                 </div>
 
-                <div
-                    style={{
-                    display: "flex",
-                    gap: "0.4rem",
-                    alignItems: "center",
-                    }}
-                >
-                    {/* Manual assignment dropdown */}
-                    <select
+                <div>
+                  <select
                     value={chore.assignedTo?._id || ""}
                     onChange={(e) =>
-                        handleAssignChore(chore._id, e.target.value || null)
+                      handleAssignChore(chore._id, e.target.value || null)
                     }
-                    style={{
-                        fontSize: "0.8rem",
-                        padding: "0.2rem 0.4rem",
-                        borderRadius: "4px",
-                        border: "1px solid #d1d5db",
-                        background: "#ffffff",
-                    }}
-                    >
+                    className="select"
+                  >
                     <option value="">Unassigned</option>
                     {household.members?.map((member) => (
-                        <option key={member._id} value={member._id}>
+                      <option key={member._id} value={member._id}>
                         {member.name}
-                        </option>
+                      </option>
                     ))}
-                    </select>
+                  </select>
 
-                    <button
+                  <button
                     type="button"
                     onClick={() => handleToggleChore(chore)}
-                    style={{
-                        padding: "0.25rem 0.6rem",
-                        borderRadius: "4px",
-                        border: "1px solid #d1d5db",
-                        background: "#f9fafb",
-                        cursor: "pointer",
-                        fontSize: "0.8rem",
-                    }}
-                    >
-                    {chore.status === "done" ? "Mark Pending" : "Mark Done"}
-                    </button>
-                    <button
+                    className="btn btn-ghost"
+                  >
+                    {chore.status === "done"
+                      ? "Mark pending"
+                      : "Mark done"}
+                  </button>
+                  <button
                     type="button"
                     onClick={() => handleDeleteChore(chore._id)}
-                    style={{
-                        padding: "0.25rem 0.6rem",
-                        borderRadius: "4px",
-                        border: "1px solid #f97373",
-                        background: "#fee2e2",
-                        color: "#b91c1c",
-                        cursor: "pointer",
-                        fontSize: "0.8rem",
-                    }}
-                    >
+                    className="btn btn-danger-outline"
+                  >
                     Delete
-                    </button>
+                  </button>
                 </div>
-                </li>
+              </li>
             ))}
-            </ul>
+          </ul>
         ) : (
-            <p>No chores yet. Add one above to get started.</p>
+          <p className="side-card-text">
+            No chores yet. Add the first one above to get started.
+          </p>
         )}
-        </div>
+      </div>
 
-        {actionMessage && (
+      {actionMessage && (
         <p
-            style={{
-            marginTop: "1rem",
-            fontSize: "0.9rem",
-            color: actionMessage.includes("error") ? "red" : "green",
-            }}
+          className={
+            actionMessage.toLowerCase().includes("error")
+              ? "error-message"
+              : "success-message"
+          }
         >
-            {actionMessage}
+          {actionMessage}
         </p>
-        )}
+      )}
     </div>
-    );
-    }
+  );
+}
 
 export default HouseholdSection;

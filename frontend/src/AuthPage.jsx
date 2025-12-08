@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { registerUser, loginUser } from "./api/auth";
 
-function AuthPage( { onAuthSuccess } ) {
-  const [mode, setMode] = useState("login"); // "login" or "register"
+function AuthPage({ onAuthSuccess }) {
+  const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,7 +34,6 @@ function AuthPage( { onAuthSuccess } ) {
         const result = await registerUser({ name, email, password });
         setMessage("Registered successfully! You can now log in.");
         console.log("Register result:", result);
-        // Switch back to login mode after registration
         setMode("login");
       }
     } catch (err) {
@@ -45,177 +44,121 @@ function AuthPage( { onAuthSuccess } ) {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "#f5f5f5",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: "400px",
-          padding: "2rem",
-          borderRadius: "8px",
-          background: "#ffffff",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-        }}
-      >
-        <h1 style={{ marginBottom: "1rem", textAlign: "center" }}>
-          Roommate Chore Tracker
-        </h1>
+    <div className="auth-page">
+      <div className="auth-inner single">
+        <section className="auth-panel">
+          <div className="auth-toggle-row">
+            <button
+              type="button"
+              onClick={() => {
+                setMode("login");
+                setMessage("");
+                setError("");
+              }}
+              className={"auth-toggle-button" + (isLogin ? " active" : "")}
+            >
+              Log in
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setMode("register");
+                setMessage("");
+                setError("");
+              }}
+              className={"auth-toggle-button" + (!isLogin ? " active" : "")}
+            >
+              Sign up
+            </button>
+          </div>
 
-        <div
-          style={{
-            display: "flex",
-            marginBottom: "1rem",
-            justifyContent: "center",
-            gap: "0.5rem",
-          }}
-        >
-          <button
-            type="button"
-            onClick={() => {
-              setMode("login");
-              setMessage("");
-              setError("");
-            }}
-            style={{
-              padding: "0.5rem 1rem",
-              borderRadius: "4px",
-              border: isLogin ? "2px solid #2563eb" : "1px solid #ccc",
-              background: isLogin ? "#2563eb" : "#ffffff",
-              color: isLogin ? "#ffffff" : "#000000",
-              cursor: "pointer",
-            }}
-          >
-            Login
-          </button>
-          <button
-            type="button"
-            onClick={() => {
-              setMode("register");
-              setMessage("");
-              setError("");
-            }}
-            style={{
-              padding: "0.5rem 1rem",
-              borderRadius: "4px",
-              border: !isLogin ? "2px solid #2563eb" : "1px solid #ccc",
-              background: !isLogin ? "#2563eb" : "#ffffff",
-              color: !isLogin ? "#ffffff" : "#000000",
-              cursor: "pointer",
-            }}
-          >
-            Sign Up
-          </button>
-        </div>
+          <h1 className="auth-title">
+            {isLogin ? "Welcome back" : "Create your space"}
+          </h1>
+          <p className="auth-subtitle">
+            {isLogin
+              ? "Sign in to see what needs doing in your flat today."
+              : "Set up an account so your household can share and rotate chores."}
+          </p>
 
-        <form onSubmit={handleSubmit}>
-          {!isLogin && (
-            <div style={{ marginBottom: "0.75rem" }}>
-              <label
-                style={{ display: "block", marginBottom: "0.25rem" }}
-                htmlFor="name"
-              >
-                Name
+          <form onSubmit={handleSubmit}>
+            {!isLogin && (
+              <div className="field">
+                <label className="field-label" htmlFor="name">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  className="input"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+              </div>
+            )}
+
+            <div className="field">
+              <label className="field-label" htmlFor="email">
+                Email
               </label>
               <input
-                id="name"
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                style={{
-                  width: "100%",
-                  padding: "0.5rem",
-                  borderRadius: "4px",
-                  border: "1px solid #ccc",
-                }}
+                id="email"
+                type="email"
+                className="input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-          )}
 
-          <div style={{ marginBottom: "0.75rem" }}>
-            <label
-              style={{ display: "block", marginBottom: "0.25rem" }}
-              htmlFor="email"
+            <div className="field">
+              <label className="field-label" htmlFor="password">
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                className="input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className="btn btn-primary auth-submit"
+              disabled={loading}
             >
-              Email
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
+              {loading
+                ? "Please wait..."
+                : isLogin
+                ? "Log in"
+                : "Create account"}
+            </button>
+          </form>
+
+          {error && <p className="error-message">{error}</p>}
+          {message && <p className="success-message">{message}</p>}
+
+          <div className="auth-footnote">
+            <div className="auth-footnote-divider" />
+
+            <div className="auth-footnote-main">
+              <div className="auth-footnote-icon">
+                <span>◎</span>
+              </div>
+              <div className="auth-footnote-text">
+                <div className="auth-footnote-title">
+                  Built for shared homes
+                </div>
+                <div className="auth-footnote-tags">
+                  <span className="auth-footnote-tag">Rotating chores</span>
+                  <span className="auth-footnote-tag">Fair assignments</span>
+                  <span className="auth-footnote-tag">One household hub</span>
+                </div>
+              </div>
+            </div>
           </div>
-
-          <div style={{ marginBottom: "0.75rem" }}>
-            <label
-              style={{ display: "block", marginBottom: "0.25rem" }}
-              htmlFor="password"
-            >
-              Password
-            </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              style={{
-                width: "100%",
-                padding: "0.5rem",
-                borderRadius: "4px",
-                border: "1px solid #ccc",
-              }}
-            />
-          </div>
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              width: "100%",
-              padding: "0.75rem",
-              borderRadius: "4px",
-              border: "none",
-              background: "#2563eb",
-              color: "#ffffff",
-              fontWeight: "bold",
-              cursor: loading ? "not-allowed" : "pointer",
-              opacity: loading ? 0.7 : 1,
-              marginTop: "0.5rem",
-            }}
-          >
-            {loading
-              ? "Please wait..."
-              : isLogin
-              ? "Log In"
-              : "Create Account"}
-          </button>
-        </form>
-
-        {error && (
-          <p style={{ color: "red", marginTop: "0.75rem", fontSize: "0.9rem" }}>
-            {error}
-          </p>
-        )}
-        {message && (
-          <p
-            style={{ color: "green", marginTop: "0.75rem", fontSize: "0.9rem" }}
-          >
-            {message}
-          </p>
-        )}
+        </section>
       </div>
     </div>
   );
