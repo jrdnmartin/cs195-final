@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3001';
+const API_URL = 'https://cs195-final.onrender.com';
 
 // Register user
 export async function registerUser({ name, email, password }) {
