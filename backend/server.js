@@ -11,6 +11,7 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 app.use(express.json());
 app.use(cors({
@@ -21,8 +22,8 @@ app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Backend is running" });
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/household", householdRoutes);
+app.use(`${API_BASE_URL}/auth`, authRoutes);
+app.use(`${API_BASE_URL}/household`, householdRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
