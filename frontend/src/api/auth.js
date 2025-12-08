@@ -1,4 +1,4 @@
-const API_URL = 'https://cs195-final.onrender.com';
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 // Register user
 export async function registerUser({ name, email, password }) {
