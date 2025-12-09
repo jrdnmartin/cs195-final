@@ -11,13 +11,18 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 3001;
-const API_BASE_URL = process.env.CLIENT_ORIGIN;
 
-app.use(express.json());
+// Apply CORS BEFORE other middleware
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN,
+  origin: process.env.CLIENT_ORIGIN || 'https://cs195-final.netlify.app',
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  optionsSuccessStatus: 200
 }));
+
+// Then parse JSON
+app.use(express.json());
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Backend is running" });
