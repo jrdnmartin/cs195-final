@@ -16,14 +16,15 @@ const API_BASE_URL = process.env.CLIENT_ORIGIN;
 app.use(express.json());
 app.use(cors({
   origin: process.env.CLIENT_ORIGIN,
+  credentials: true,
 }));
 
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok", message: "Backend is running" });
 });
 
-app.use(`${API_BASE_URL}/auth`, authRoutes);
-app.use(`${API_BASE_URL}/household`, householdRoutes);
+app.use(`/api/auth`, authRoutes);
+app.use(`/api/household`, householdRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`);
