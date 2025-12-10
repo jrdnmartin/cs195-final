@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3001;
 
 // Apply CORS BEFORE other middleware
 app.use(cors({
-  origin: process.env.CLIENT_ORIGIN || 'https://cs195-final.netlify.app',
+  origin: process.env.CLIENT_ORIGIN || 'https://choreflow.jrdnmartin.com',
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
