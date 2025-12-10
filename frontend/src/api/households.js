@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:3001';
+const API_URL = 'https://cs195-final.onrender.com';
 
 // GET /api/households/mine
 export async function getMyHousehold(token) {
