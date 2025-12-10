@@ -43,9 +43,9 @@ function App() {
       <header className="app-header">
         <div className="app-header-inner">
           <div className="app-brand">
-            <div className="app-logo-circle">RT</div>
+            <div className="app-logo-circle">CF</div>
             <div className="app-title-block">
-              <div className="app-title">Roommate Tracker</div>
+              <div className="app-title">Chore Flow</div>
               <div className="app-subtitle">
                 Keep your shared home running smoothly.
               </div>
