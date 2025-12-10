@@ -1,4 +1,4 @@
-const API_URL = 'https://cs195-final.onrender.com';
+const API_URL = import.meta.env.VITE_API_BASE_URL;
 
 // GET /api/households/mine
 export async function getMyHousehold(token) {
